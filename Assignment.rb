@@ -4,13 +4,32 @@
 
 require 'rest-client' 
 
+require 'json'
+
+
+=begin
+	This script enables the authorized user(Teacher) 
+	to change the course name by calling on the api and change the course settings
+	the methods are ordered to reflect the thought process of how I was able to make these changes
+	Can be commented out using =begin =end block
+	
+=end
 class Assignment
-	#static method of the class
+
+	
 	def self.get_course_details
 		get_response = RestClient.get('https://canvas.instructure.com/api/v1/courses/2106760', {:Authorization => 'Bearer 7~Ic2qTMmcJF3ci6LCGvf4Iw04XYdvKjeokVZzvsHOtJ1ppSLtXDLPo7bvacNC8XVq'})
-		puts "=======Course Details==========================="
-		puts "Response Code: #{get_response.code}"
-		puts get_response.body
+		
+		if get_response.code == 200	
+			puts "==COURSE NAME: "
+			json_parsed  = JSON.parse(get_response.body)
+			puts "COURSE NAME => #{json_parsed["name"]}"
+			puts "=======Course Details==========================="
+			puts get_response.body	
+		else
+			return 0
+		end
+		
 	end
 
 
@@ -20,17 +39,30 @@ class Assignment
                                              payload: {"course[name]" => "#{course_name}"},
                                              headers: {"Authorization" => "Bearer 7~Ic2qTMmcJF3ci6LCGvf4Iw04XYdvKjeokVZzvsHOtJ1ppSLtXDLPo7bvacNC8XVq"})
 		
-		puts "=======Course with Updated Name==========================="
-
-		puts " Updated course name is #{put_response.body}"
+		if put_response.code == 200	|| 204
+			json_parsed  = JSON.parse(put_response.body)
+			puts "COURSE NAME =>  #{json_parsed["name"]}"
+			puts "=======Course with Updated Name==========================="
+			puts put_response.body
+				
+		else
+			return 0
+		end
+		
 	end
 
 
 
 	def self.get_course_settings
 		get_course_settings = RestClient.get('https://canvas.instructure.com/api/v1/courses/2106760/settings', {:Authorization => 'Bearer 7~Ic2qTMmcJF3ci6LCGvf4Iw04XYdvKjeokVZzvsHOtJ1ppSLtXDLPo7bvacNC8XVq'})
-		puts "========Course Settings========================================================"
-		puts "Course settings:  #{get_course_settings.body}"
+		
+		if  get_course_settings.code == 200	
+			puts "========Course Settings========================================================"
+			puts get_course_settings.body		
+		else
+			return 0
+		end
+		
 	end
 
 
@@ -40,9 +72,14 @@ class Assignment
                                              url: 'https://canvas.instructure.com/api/v1/courses/2106760/settings',
                                              payload: {"allow_student_discussion_topics" => false, "allow_student_discussion_editing" => true},
                                              headers: {"Authorization" => "Bearer 7~Ic2qTMmcJF3ci6LCGvf4Iw04XYdvKjeokVZzvsHOtJ1ppSLtXDLPo7bvacNC8XVq"})
-		puts "=========Updated to not allow student_discussion==============="
-		
-		puts "changed settings #{put_changeSettings}"
+		if  put_changeSettings.code == 200	|| 204
+			puts "=========Updated to not allow student_discussion==============="
+			json_parsed  = JSON.parse(put_changeSettings.body)
+			puts "allow_student_discussion_topics =>  #{json_parsed["allow_student_discussion_topics"] }"
+			puts put_changeSettings		
+		else
+			return 0
+		end
 
 	end
 
@@ -64,41 +101,12 @@ Assignment.restrict_student_discussion
 
 
 
-=begin 
-base url is https://canvas.instructure.com and since  going through the api,
-added to this is the api doumentation format for a specific course
-=end 
-
-#= begin 
-#fetch existing course
 
 
 
 
 
-
-
-
-
-
-#body_response = response.body
-
-#= end 
-=begin
- Update the course name
-
-=end 
-
-
-
-
-
-
-
-=begin
- view the course settings
-
-=end 
+ 
 
 
 
