@@ -13,7 +13,7 @@ How to run script
  - fork repo
  - clone it locally 
  - run bundle install to ensure the required gems are installed and up to date
- - navigate to root of the Assignment_File folder and (in terminal) run ruby Assignment.rb <Course Name>
+ - navigate to root of the Assignment_File folder and (in terminal) run ruby Assignment.rb "Course Name" - Must be in quotation marks to record the whole string
  - The <Course Name> is input for the method that modifies the course name
  - Returned results will display in terminal, using =begin =end block to return method by method and # to commend out the corresponding static method call at the bottom of the class in Assignment.rb
  
